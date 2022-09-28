@@ -22,6 +22,9 @@ VALUES ('1', '1', '1', '1', 'jakas wiadomosc', '0', '1','2022-07-07 11:15:01', '
 INSERT INTO alert_receivers
 VALUES ('1', '1', '1', '2022-07-07 11:15:01', '2022-07-07 11:15:01');
 
+INSERT INTO data
+VALUES ('1', '1', '1', '10', '99', '77', '0', '', '2022-07-07 11:15:01', null, '2022-07-07 11:15:01', '2022-07-07 11:15:01');
+
 UPDATE alert_type_receivers
 SET interval_receiver = '2'
 WHERE id= 2;

@@ -20,29 +20,13 @@ function App() {
 			<Router>
 				<Routes>
 					<Route path='/' element={<Data />} />
-				</Routes>
-				<Routes>
 					<Route path='/location' element={<Location />} />
-				</Routes>
-				<Routes>
 					<Route path='/location/create' element={<NewLocation />} />
-				</Routes>
-				<Routes>
 					<Route path='/device' element={<Device />} />
-				</Routes>
-				<Routes>
 					<Route path='/device/create' element={<NewDevice />} />
-				</Routes>
-				<Routes>
 					<Route path='/type' element={<Type />} />
-				</Routes>
-				<Routes>
 					<Route path='/receiver' element={<Receiver />} />
-				</Routes>
-				<Routes>
 					<Route path='/receiver/create' element={<NewReceiver />} />
-				</Routes>
-				<Routes>
 					<Route path='/alert' element={<Alert />} />
 				</Routes>
 			</Router>

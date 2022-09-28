@@ -13,7 +13,7 @@ class Data extends React.Component {
 		};
 	}
 
-	componentDidMount(data) {
+	componentDidMount() {
 		this.feachDevices();
 		this.feachLocations();
 		this.feachData();
