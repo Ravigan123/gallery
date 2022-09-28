@@ -122,7 +122,8 @@ class ReceiverController {
 				.json({ message: "both values cannot be null (Location, Type alert)" });
 
 		if (req.body.interval === "") {
-			if (id_alert_type === null) interval_receiver = 5;
+			if (id_alert_type === null)
+				interval_receiver = parseInt(req.body.interval);
 			else {
 				const intervalType = await AlertType.query()
 					.select("id", "interval_alert")

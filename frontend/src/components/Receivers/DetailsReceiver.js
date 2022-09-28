@@ -62,9 +62,10 @@ function DetailsReceiver(props) {
 	const validateForm = (backandValid) => {
 		const newErrors = {};
 
-		if (backandValid !== undefined) newErrors.name = backandValid;
 		if (backandValid === "both values cannot be null (Location, Type alert)")
 			newErrors.bothNull = backandValid;
+		if (backandValid === "if Type alert is null or empty enter interval")
+			newErrors.interval = backandValid;
 
 		return newErrors;
 	};
@@ -83,14 +84,41 @@ function DetailsReceiver(props) {
 
 	async function addReceiverDetails(e) {
 		e.preventDefault();
-		const receiver = {
-			receiver: props.receiver.id,
-			location,
-			nameAlert,
-			interval,
-		};
-		const backandValid = await addToBase(receiver);
-		const formErrors = validateForm(backandValid);
+		let formErrors;
+		let backandValid;
+		if (
+			(nameAlert === "null" || nameAlert === "") &&
+			(location === "null" || location === "")
+		) {
+			backandValid = "both values cannot be null (Location, Type alert)";
+			formErrors = validateForm(backandValid);
+		} else if (
+			(nameAlert === "null" || nameAlert === "") &&
+			!(location === "null" || location === "")
+		) {
+			if (interval === "") {
+				backandValid = "if Type alert is null or empty enter interval";
+				formErrors = validateForm(backandValid);
+			} else {
+				const receiver = {
+					receiver: props.receiver.id,
+					location,
+					nameAlert,
+					interval,
+				};
+				backandValid = await addToBase(receiver);
+				formErrors = validateForm(backandValid);
+			}
+		} else {
+			const receiver = {
+				receiver: props.receiver.id,
+				location,
+				nameAlert,
+				interval,
+			};
+			backandValid = await addToBase(receiver);
+			formErrors = validateForm(backandValid);
+		}
 		if (Object.keys(formErrors).length > 0) setErrors(formErrors);
 		else window.location.reload(false);
 	}
@@ -158,11 +186,11 @@ function DetailsReceiver(props) {
 					aria-label='Default select example'
 					onChange={handleLocation}
 					className='mb-3'
-					value={"null"}>
+					defaultValue='null'>
 					<option value='null' disabled>
 						Location
 					</option>
-					<option>null</option>
+					<option value='null'>null</option>
 					{locations.map((location) => {
 						return (
 							<option key={location.id} value={location.id}>
@@ -177,11 +205,11 @@ function DetailsReceiver(props) {
 					aria-label='Default select example'
 					onChange={handleAlertType}
 					className='mb-3'
-					value='null'>
+					defaultValue='null'>
 					<option value='null' disabled>
 						Type alert
 					</option>
-					<option>null</option>
+					<option value='null'>null</option>
 					{alertType.map((type) => {
 						return (
 							<option key={type.id} value={type.id}>
@@ -204,6 +232,9 @@ function DetailsReceiver(props) {
 							isInvalid={!!errors.interval}
 							onChange={handleInterval}
 						/>
+						<Form.Control.Feedback type='invalid'>
+							{errors.interval}
+						</Form.Control.Feedback>
 					</FloatingLabel>
 				</Form.Group>
 
