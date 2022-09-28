@@ -7,7 +7,10 @@ exports.up = function (knex) {
 		table.increments("id").primary();
 		table.string("name_type", 30).notNullable();
 		table.boolean("enabled").notNullable();
-		table.timestamps(false, true);
+		table.timestamp("created_at").defaultTo(knex.raw("CURRENT_TIMESTAMP"));
+		table
+			.timestamp("updated_at")
+			.defaultTo(knex.raw("CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP"));
 	});
 };
 

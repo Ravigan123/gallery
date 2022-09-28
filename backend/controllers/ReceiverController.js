@@ -32,7 +32,7 @@ class ReceiverController {
 				.json({ message: "The given receiver already exists" });
 
 		const name_receiver = req.body.nameReceiver;
-		const type_receiver = req.body.Type;
+		const type_receiver = req.body.type;
 		const address = req.body.address;
 		const addition = req.body.addition;
 

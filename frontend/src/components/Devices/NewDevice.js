@@ -84,26 +84,36 @@ function NewDevice() {
 			newErrors.server = backandValid;
 		if (backandValid === "The given device already exists")
 			newErrors.name = backandValid;
+		if (backandValid === "Type and Location cannot be empty")
+			newErrors.typeLocation = backandValid;
 
 		return newErrors;
 	};
 
 	async function addDevice(e) {
 		e.preventDefault();
-		let enabled;
-		if (checked === true) enabled = 1;
-		else enabled = 0;
-		const device = {
-			name,
-			location,
-			type,
-			params,
-			details,
-			interval,
-			enabled,
-		};
-		const backandValid = await addToBase(device);
-		const formErrors = validateForm(backandValid);
+		let formErrors;
+		let backandValid;
+		if (location === "" || type === "") {
+			const err = "Type and Location cannot be empty";
+			formErrors = validateForm(err);
+		} else {
+			let enabled;
+			if (checked === true) enabled = 1;
+			else enabled = 0;
+			const device = {
+				name,
+				location,
+				type,
+				params,
+				details,
+				interval,
+				enabled,
+			};
+			backandValid = await addToBase(device);
+			formErrors = validateForm(backandValid);
+		}
+
 		if (Object.keys(formErrors).length > 0) setErrors(formErrors);
 		else navigate("/device");
 	}
@@ -113,6 +123,9 @@ function NewDevice() {
 			<h1>Add Device</h1>
 			{errors.server !== undefined && (
 				<Alert variant='danger'>{errors.server}</Alert>
+			)}
+			{errors.typeLocation !== undefined && (
+				<Alert variant='danger'>{errors.typeLocation}</Alert>
 			)}
 
 			<Form onSubmit={addDevice}>
@@ -138,8 +151,10 @@ function NewDevice() {
 					aria-label='Default select example'
 					onChange={handleType}
 					className='mb-3'
-					value={type}>
-					<option disabled>Type</option>
+					defaultValue='null'>
+					<option value='null' disabled>
+						Type
+					</option>
 					{types.map((type) => {
 						return (
 							<option key={type.id} value={type.id}>
@@ -153,8 +168,10 @@ function NewDevice() {
 					aria-label='Default select example'
 					onChange={handleLocation}
 					className='mb-3'
-					value={location}>
-					<option disabled>Location</option>
+					defaultValue='null'>
+					<option value='null' disabled>
+						Location
+					</option>
 					{locations.map((loc) => {
 						return (
 							<option key={loc.id} value={loc.id}>

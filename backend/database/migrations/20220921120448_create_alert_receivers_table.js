@@ -17,7 +17,10 @@ exports.up = function (knex) {
 			.references("alerts.id")
 			.onUpdate("CASCADE")
 			.onDelete("CASCADE");
-		table.timestamps(false, true);
+		table.timestamp("created_at").defaultTo(knex.raw("CURRENT_TIMESTAMP"));
+		table
+			.timestamp("updated_at")
+			.defaultTo(knex.raw("CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP"));
 		table.unique(["id"], "idx_id_alert_receiver");
 	});
 };

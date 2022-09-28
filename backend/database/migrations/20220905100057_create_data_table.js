@@ -24,7 +24,10 @@ exports.up = function (knex) {
 		table.string("description", 50).nullable();
 		table.dateTime("date_real").notNullable();
 		table.dateTime("date_out");
-		table.timestamps(false, true);
+		table.timestamp("created_at").defaultTo(knex.raw("CURRENT_TIMESTAMP"));
+		table
+			.timestamp("updated_at")
+			.defaultTo(knex.raw("CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP"));
 		table.unique(["id"], "idx_id_data");
 	});
 };

@@ -9,7 +9,7 @@ import Alert from "react-bootstrap/Alert";
 
 function NewReceiver() {
 	const [nameReceiver, setNameReceiver] = useState("");
-	const [Type, setType] = useState("");
+	const [type, setType] = useState("");
 	const [address, setAddress] = useState("");
 	const [addition, setAddition] = useState("");
 	const [errors, setErrors] = useState({});
@@ -45,27 +45,35 @@ function NewReceiver() {
 		setAddition(event.target.value);
 	};
 
-	const validateForm = (backandValid, type) => {
+	const validateForm = (backandValid) => {
 		const newErrors = {};
 		if (backandValid === "No connection to the server")
 			newErrors.server = backandValid;
 		if (backandValid === "The given receiver already exists")
 			newErrors.nameReceiver = backandValid;
-		if (type === "") newErrors.type = "Select Type";
+		if (backandValid === "Type cannot be empty") newErrors.type = backandValid;
 
 		return newErrors;
 	};
 
 	async function addReceiver(e) {
 		e.preventDefault();
-		const receiver = {
-			nameReceiver,
-			Type,
-			addition,
-			address,
-		};
-		const backandValid = await addToBase(receiver);
-		const formErrors = validateForm(backandValid, Type);
+		let formErrors;
+		let backandValid;
+		if (type === "") {
+			const err = "Type cannot be empty";
+			formErrors = validateForm(err);
+		} else {
+			const receiver = {
+				nameReceiver,
+				type,
+				addition,
+				address,
+			};
+			backandValid = await addToBase(receiver);
+			formErrors = validateForm(backandValid);
+		}
+
 		if (Object.keys(formErrors).length > 0) setErrors(formErrors);
 		else navigate("/receiver");
 	}
@@ -106,7 +114,7 @@ function NewReceiver() {
 					aria-label='Default select example'
 					onChange={handleType}
 					className='mb-3'
-					value={"null"}>
+					defaultValue={"null"}>
 					<option disabled value='null'>
 						Type
 					</option>
