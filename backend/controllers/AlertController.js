@@ -32,6 +32,7 @@ class AlertController {
 			res.status(500).json(error);
 		}
 	}
+
 	async getAlertType(req, res) {
 		const alertType = await AlertType.query().select("id", "name_alert");
 		res.status(200).json(alertType);

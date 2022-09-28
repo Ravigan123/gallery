@@ -69,6 +69,7 @@ class DeviceController {
 
 		res.status(201).json(newDevice);
 	}
+
 	async updateDevice(req, res) {
 		if (req.body["changedName"] === true) {
 			const deviceFind = await Device.query().where(

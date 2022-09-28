@@ -15,9 +15,11 @@ class DataController {
 			res.status(500).json(error);
 		}
 	}
+
 	async getData(req, res) {
 		res.send("dziala12");
 	}
+
 	async translateData(req, res) {
 		// tutaj if'y jaki typ urzadzenia
 		const data = {

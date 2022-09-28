@@ -61,6 +61,7 @@ class LocationController {
 
 		res.status(201).json(newLocation);
 	}
+
 	async updateLocation(req, res) {
 		if (req.body["changedName"] === true) {
 			const locationFind = await Location.query().where(

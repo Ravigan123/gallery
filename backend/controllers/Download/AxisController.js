@@ -4,7 +4,7 @@ const Device = require("../models/Device");
 const Archive = require("../models/Archive");
 const DataController = require("../DataController");
 
-class AxisController {
+class AxisController extends DataController {
 	async getAllData(req, res) {
 		try {
 			const dataQuery = await Data.query()
@@ -21,6 +21,7 @@ class AxisController {
 	}
 	async translateData(req, res) {
 		// tutaj if'y jaki typ urzadzenia
+		this.
 		const data = {
 			interval: req.query.interval,
 			in: req.query.in,

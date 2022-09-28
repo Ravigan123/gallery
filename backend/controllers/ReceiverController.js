@@ -50,6 +50,7 @@ class ReceiverController {
 
 		res.status(201).json(newReceiver);
 	}
+
 	async updateReceiver(req, res) {
 		if (req.body["changedName"] === true) {
 			const receiverFind = await Receiver.query().where(
