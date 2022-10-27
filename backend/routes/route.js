@@ -7,7 +7,7 @@ const TypeController = require("../controllers/TypeController");
 const AlertController = require("../controllers/AlertController");
 const ReceiverController = require("../controllers/ReceiverController");
 
-router.get("/", DataController.getAllData);
+router.get("/data", DataController.getAllData);
 router.get("/store", DataController.translateData);
 router.delete("/:id", DataController.deleteData);
 
@@ -21,7 +21,7 @@ router.put("/device/:id", DeviceController.updateDevice);
 router.delete("/device/:id", DeviceController.deleteDevice);
 
 router.get("/location", LocationController.getAllLocations);
-router.get("/locationSelect", LocationController.getLocationsToSelect);
+router.get("/getLocationSelect", LocationController.getLocationsToSelect);
 router.post("/location/", LocationController.storeLocation);
 router.put("/location/:id", LocationController.updateLocation);
 router.delete("/location/:id", LocationController.deleteLocation);

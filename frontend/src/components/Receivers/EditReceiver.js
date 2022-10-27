@@ -17,7 +17,10 @@ function EditReceiver(props) {
 		const id = receiver.id;
 		let err;
 		try {
-			await axios.put(`http://localhost:4000/receiver/` + id, receiver);
+			await axios.put(
+				`${process.env.REACT_APP_API_URL}receiver/` + id,
+				receiver
+			);
 		} catch (error) {
 			err = error.response.data.message;
 		}

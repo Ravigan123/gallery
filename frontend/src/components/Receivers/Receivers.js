@@ -29,7 +29,7 @@ class Receivers extends React.Component {
 	}
 
 	async feachReceivers() {
-		axios.get(`http://localhost:4000/receiver`).then((res) => {
+		axios.get(`${process.env.REACT_APP_API_URL}receiver`).then((res) => {
 			const receivers = res.data;
 			this.setState({ receivers });
 		});
@@ -39,9 +39,11 @@ class Receivers extends React.Component {
 		const receivers = [...this.state.receivers].filter(
 			(receiver) => receiver.id !== id
 		);
-		axios.delete(`http://localhost:4000/receiver/` + id).then((res) => {
-			this.setState({ receivers });
-		});
+		axios
+			.delete(`${process.env.REACT_APP_API_URL}receiver/` + id)
+			.then((res) => {
+				this.setState({ receivers });
+			});
 	}
 
 	toogleEditModal() {
@@ -54,7 +56,7 @@ class Receivers extends React.Component {
 
 	async editReceiver(receiver) {
 		const id = receiver.id;
-		await axios.put(`http://localhost:4000/receiver/` + id, receiver);
+		await axios.put(`${process.env.REACT_APP_API_URL}receiver/` + id, receiver);
 
 		const receivers = [...this.state.receivers];
 		if (id >= 0) {

@@ -46,7 +46,7 @@ class Device extends React.Component {
 	}
 
 	async feachDevices() {
-		axios.get(`http://localhost:4000/device`).then((res) => {
+		axios.get(`${process.env.REACT_APP_API_URL}device`).then((res) => {
 			const devices = res.data;
 			this.setState({ devices });
 		});
@@ -56,7 +56,7 @@ class Device extends React.Component {
 		const devices = [...this.state.devices].filter(
 			(device) => device.id !== id
 		);
-		axios.delete(`http://localhost:4000/device/` + id).then((res) => {
+		axios.delete(`${process.env.REACT_APP_API_URL}device/` + id).then((res) => {
 			this.setState({ devices });
 		});
 	}
@@ -67,7 +67,7 @@ class Device extends React.Component {
 
 	async editDevice(device) {
 		const id = device.id;
-		await axios.put(`http://localhost:4000/device/` + id, device);
+		await axios.put(`${process.env.REACT_APP_API_URL}device/` + id, device);
 
 		const devices = [...this.state.devices];
 		if (id >= 0) {

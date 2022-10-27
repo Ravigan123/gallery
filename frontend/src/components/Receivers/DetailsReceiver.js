@@ -23,20 +23,24 @@ function DetailsReceiver(props) {
 
 	async function feachDetails() {
 		const id = props.receiver.id;
-		axios.get(`http://localhost:4000/receiverDetails/` + id).then((res) => {
-			const details = res.data;
-			setDetails(details);
-		});
+		axios
+			.get(`${process.env.REACT_APP_API_URL}receiverDetails/` + id)
+			.then((res) => {
+				const details = res.data;
+				setDetails(details);
+			});
 	}
 
 	async function feachLocations() {
-		axios.get(`http://localhost:4000/locationSelect`).then((res) => {
-			const locations = res.data;
-			setLocations(locations);
-		});
+		axios
+			.get(`${process.env.REACT_APP_API_URL}getLocationSelect`)
+			.then((res) => {
+				const locations = res.data;
+				setLocations(locations);
+			});
 	}
 	async function feachAlertType() {
-		axios.get(`http://localhost:4000/alertType`).then((res) => {
+		axios.get(`${process.env.REACT_APP_API_URL}alertType`).then((res) => {
 			const alertType = res.data;
 			setAlertType(alertType);
 		});
@@ -54,9 +58,11 @@ function DetailsReceiver(props) {
 
 	async function deleteReceiverDetails(id) {
 		const det = [...details].filter((detail) => detail.id !== id);
-		axios.delete(`http://localhost:4000/receiverDetails/` + id).then((res) => {
-			setDetails(det);
-		});
+		axios
+			.delete(`${process.env.REACT_APP_API_URL}receiverDetails/` + id)
+			.then((res) => {
+				setDetails(det);
+			});
 	}
 
 	const validateForm = (backandValid) => {
@@ -73,7 +79,10 @@ function DetailsReceiver(props) {
 	async function addToBase(receiver) {
 		let err;
 		try {
-			await axios.post("http://localhost:4000/receiverDetails", receiver);
+			await axios.post(
+				`${process.env.REACT_APP_API_URL}receiverDetails`,
+				receiver
+			);
 		} catch (error) {
 			if (error.response.data === undefined)
 				err = "No connection to the server";

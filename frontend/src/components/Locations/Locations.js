@@ -46,7 +46,7 @@ class Locations extends React.Component {
 	}
 
 	async feachLocations() {
-		axios.get(`http://localhost:4000/location`).then((res) => {
+		axios.get(`${process.env.REACT_APP_API_URL}location`).then((res) => {
 			const locations = res.data;
 			this.setState({ locations });
 		});
@@ -56,9 +56,11 @@ class Locations extends React.Component {
 		const locations = [...this.state.locations].filter(
 			(location) => location.id !== id
 		);
-		axios.delete(`http://localhost:4000/location/` + id).then((res) => {
-			this.setState({ locations });
-		});
+		axios
+			.delete(`${process.env.REACT_APP_API_URL}location/` + id)
+			.then((res) => {
+				this.setState({ locations });
+			});
 	}
 
 	toogleModal() {
@@ -68,7 +70,7 @@ class Locations extends React.Component {
 	async editLocation(location) {
 		console.log("object");
 		const id = location.id;
-		await axios.put(`http://localhost:4000/location/` + id, location);
+		await axios.put(`${process.env.REACT_APP_API_URL}location/` + id, location);
 
 		const locations = [...this.state.locations];
 		if (id >= 0) {

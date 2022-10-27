@@ -16,7 +16,7 @@ class Types extends React.Component {
 	}
 
 	async feachtypes() {
-		axios.get(`http://localhost:4000/type`).then((res) => {
+		axios.get(`${process.env.REACT_APP_API_URL}type`).then((res) => {
 			const types = res.data;
 			this.setState({ types });
 		});

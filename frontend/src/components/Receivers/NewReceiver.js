@@ -18,7 +18,7 @@ function NewReceiver() {
 	async function addToBase(receiver) {
 		let err;
 		try {
-			await axios.post("http://localhost:4000/receiver", receiver);
+			await axios.post(`${process.env.REACT_APP_API_URL}receiver`, receiver);
 		} catch (error) {
 			if (error.response.data === undefined)
 				err = "No connection to the server";

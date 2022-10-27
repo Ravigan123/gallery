@@ -19,7 +19,7 @@ function NewLocation() {
 	async function addToBase(location) {
 		let err;
 		try {
-			await axios.post("http://localhost:4000/location", location);
+			await axios.post(`${process.env.REACT_APP_API_URL}location`, location);
 		} catch (error) {
 			if (error.response.data === undefined)
 				err = "No connection to the server";

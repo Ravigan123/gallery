@@ -26,22 +26,24 @@ function NewDevice() {
 	});
 
 	async function feachTypes() {
-		axios.get(`http://localhost:4000/typeSelect`).then((res) => {
+		axios.get(`${process.env.REACT_APP_API_URL}typeSelect`).then((res) => {
 			const types = res.data;
 			setTypes(types);
 		});
 	}
 	async function feachLocations() {
-		axios.get(`http://localhost:4000/locationSelect`).then((res) => {
-			const locations = res.data;
-			setlocations(locations);
-		});
+		axios
+			.get(`${process.env.REACT_APP_API_URL}getLocationSelect`)
+			.then((res) => {
+				const locations = res.data;
+				setlocations(locations);
+			});
 	}
 
 	async function addToBase(device) {
 		let err;
 		try {
-			await axios.post("http://localhost:4000/device", device);
+			await axios.post(`${process.env.REACT_APP_API_URL}device`, device);
 		} catch (error) {
 			if (error.response.data === undefined)
 				err = "No connection to the server";

@@ -24,23 +24,25 @@ function EditDevice(props) {
 	}, []);
 
 	async function feachTypes() {
-		axios.get(`http://localhost:4000/typeSelect`).then((res) => {
+		axios.get(`${process.env.REACT_APP_API_URL}typeSelect`).then((res) => {
 			const types = res.data;
 			setTypes(types);
 		});
 	}
 	async function feachLocations() {
-		axios.get(`http://localhost:4000/locationSelect`).then((res) => {
-			const locations = res.data;
-			setlocations(locations);
-		});
+		axios
+			.get(`${process.env.REACT_APP_API_URL}getLocationSelect`)
+			.then((res) => {
+				const locations = res.data;
+				setlocations(locations);
+			});
 	}
 
 	async function validDevice(device) {
 		const id = device.id;
 		let err;
 		try {
-			await axios.put(`http://localhost:4000/device/` + id, device);
+			await axios.put(`${process.env.REACT_APP_API_URL}device/` + id, device);
 		} catch (error) {
 			err = error.response.data.message;
 		}

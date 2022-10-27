@@ -21,7 +21,6 @@ class DataController {
 	}
 
 	async translateData(req, res) {
-		// tutaj if'y jaki typ urzadzenia
 		const data = {
 			interval: req.query.interval,
 			in: req.query.in,

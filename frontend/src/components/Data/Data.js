@@ -26,20 +26,20 @@ class Data extends React.Component {
 	}
 
 	async feachDevices() {
-		axios.get(`http://localhost:4000/device`).then((res) => {
+		axios.get(`${process.env.REACT_APP_API_URL}device`).then((res) => {
 			const devices = res.data;
 			this.setState({ devices });
 		});
 	}
 	async feachLocations() {
-		axios.get(`http://localhost:4000/location`).then((res) => {
+		axios.get(`${process.env.REACT_APP_API_URL}location`).then((res) => {
 			const locations = res.data;
 			this.setState({ locations });
 		});
 	}
 
 	async feachData() {
-		axios.get(`http://localhost:4000/`).then((res) => {
+		axios.get(`${process.env.REACT_APP_API_URL}data`).then((res) => {
 			const datas = res.data;
 			this.setState({ datas });
 		});

@@ -18,7 +18,10 @@ function EditLocation(props) {
 		const id = location.id;
 		let err;
 		try {
-			await axios.put(`http://localhost:4000/location/` + id, location);
+			await axios.put(
+				`${process.env.REACT_APP_API_URL}location/` + id,
+				location
+			);
 		} catch (error) {
 			err = error.response.data.message;
 		}

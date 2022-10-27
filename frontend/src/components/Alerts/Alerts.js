@@ -41,7 +41,7 @@ class Alerts extends React.Component {
 	}
 
 	async feachAlerts() {
-		axios.get(`http://localhost:4000/alert`).then((res) => {
+		axios.get(`${process.env.REACT_APP_API_URL}alert`).then((res) => {
 			const alerts = res.data;
 			this.setState({ alerts });
 		});
@@ -53,7 +53,7 @@ class Alerts extends React.Component {
 
 	async doneHandler(alert) {
 		const id = alert.id;
-		await axios.put(`http://localhost:4000/alert/` + id, alert);
+		await axios.put(`${process.env.REACT_APP_API_URL}alert/` + id, alert);
 		window.location.reload(false);
 	}
 
