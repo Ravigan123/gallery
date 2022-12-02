@@ -101,7 +101,6 @@ function EditDevice(props) {
 			enabled,
 			changedName,
 		};
-		console.log(device);
 		const backendValid = await validDevice(device);
 		const formErrors = validateForm(backendValid);
 		if (Object.keys(formErrors).length > 0) setErrors(formErrors);

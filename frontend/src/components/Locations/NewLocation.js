@@ -71,7 +71,6 @@ function NewLocation() {
 			interval,
 			enabled,
 		};
-
 		const backandValid = await addToBase(location);
 		const formErrors = validateForm(backandValid);
 

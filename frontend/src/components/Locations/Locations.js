@@ -68,7 +68,6 @@ class Locations extends React.Component {
 	}
 
 	async editLocation(location) {
-		console.log("object");
 		const id = location.id;
 		await axios.put(`${process.env.REACT_APP_API_URL}location/` + id, location);
 

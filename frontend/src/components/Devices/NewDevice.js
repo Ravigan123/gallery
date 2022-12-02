@@ -23,7 +23,7 @@ function NewDevice() {
 	useEffect(() => {
 		feachTypes();
 		feachLocations();
-	});
+	}, []);
 
 	async function feachTypes() {
 		axios.get(`${process.env.REACT_APP_API_URL}typeSelect`).then((res) => {
