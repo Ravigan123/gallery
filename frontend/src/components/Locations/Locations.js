@@ -5,6 +5,9 @@ import axios from "axios";
 import Button from "react-bootstrap/Button";
 import Modal from "react-modal";
 import EditLocation from "./EditLocation";
+import * as AiIcons from "react-icons/ai";
+import * as FaIcons from "react-icons/fa";
+import Spinner from "react-bootstrap/Spinner";
 
 function padTo2Digits(num) {
 	return num.toString().padStart(2, "0");
@@ -31,6 +34,7 @@ class Locations extends React.Component {
 		super(props);
 		this.state = {
 			locations: [],
+			dataEmpty: false,
 			showEditModal: false,
 			editLocation: {},
 		};
@@ -48,6 +52,7 @@ class Locations extends React.Component {
 	async feachLocations() {
 		axios.get(`${process.env.REACT_APP_API_URL}location`).then((res) => {
 			const locations = res.data;
+			this.state.dataEmpty = true;
 			this.setState({ locations });
 		});
 	}
@@ -85,69 +90,100 @@ class Locations extends React.Component {
 	}
 
 	render() {
+		let table;
+		if (this.state.locations.length !== 0) {
+			table = (
+				<>
+					<h1>Locations</h1>
+					<a className='float-end' href='/location/create'>
+						<Button variant='primary'>Add</Button>
+					</a>
+					<Modal isOpen={this.state.showEditModal} contentLabel='Edit location'>
+						<EditLocation
+							name={this.state.editLocation.name_location}
+							codeSend={this.state.editLocation.code_to_send}
+							codeReceive={this.state.editLocation.code_to_receive}
+							enabled={this.state.editLocation.enabled}
+							delete={this.state.editLocation.delete}
+							url={this.state.editLocation.url}
+							interval={this.state.editLocation.interval_location}
+							id={this.state.editLocation.id}
+							onCancel={() => this.toogleModal()}
+							onEdit={(location) => this.editLocation(location)}
+						/>
+					</Modal>
+					<Table className='mt-5' hover>
+						<thead>
+							<tr>
+								<th>Name</th>
+								<th>Code to send</th>
+								<th>Code to receive</th>
+								<th>Enabled</th>
+								<th>Delete</th>
+								<th>URL</th>
+								<th>Interval</th>
+								<th>Created</th>
+								<th>Action</th>
+							</tr>
+						</thead>
+						<tbody>
+							{this.state.locations.map((location) => {
+								const d = new Date(location.created_at);
+								const created = formatDate(d);
+								return (
+									<tr key={location.id}>
+										<td>{location.name_location}</td>
+										<td>{location.code_to_send}</td>
+										<td>{location.code_to_receive}</td>
+										<td>{location.enabled}</td>
+										<td>{location.delete}</td>
+										<td>{location.url}</td>
+										<td>{location.interval_location}</td>
+										<td>{created}</td>
+										<td>
+											<AiIcons.AiFillEdit
+												title='edit'
+												className='icon-table'
+												onClick={(key) => {
+													this.editLocationHandler(location);
+												}}
+											/>
+
+											<AiIcons.AiFillDelete
+												title='delete'
+												className='icon-table'
+												onClick={(key) => this.deleteLocation(location.id)}
+											/>
+										</td>
+									</tr>
+								);
+							})}
+						</tbody>
+					</Table>
+				</>
+			);
+		} else {
+			table = (
+				<>
+					<h1 className='noElement'>No locations</h1>
+					<a className='float-end' href='/location/create'>
+						<Button className='bnt-action'>Add</Button>
+					</a>
+				</>
+			);
+		}
 		return (
-			<Container className='mt-3'>
-				<h1>Locations</h1>
-				<a className='float-end' href='/location/create'>
-					<Button variant='primary'>Add</Button>
-				</a>
-				<Modal isOpen={this.state.showEditModal} contentLabel='Edit location'>
-					<EditLocation
-						name={this.state.editLocation.name_location}
-						enabled={this.state.editLocation.enabled}
-						delete={this.state.editLocation.delete}
-						url={this.state.editLocation.url}
-						interval={this.state.editLocation.interval_location}
-						id={this.state.editLocation.id}
-						onCancel={() => this.toogleModal()}
-						onEdit={(location) => this.editLocation(location)}
-					/>
-				</Modal>
-				<Table striped hover>
-					<thead>
-						<tr>
-							<th>Name</th>
-							<th>Enabled</th>
-							<th>Delete</th>
-							<th>URL</th>
-							<th>Interval</th>
-							<th>Created</th>
-						</tr>
-					</thead>
-					<tbody>
-						{this.state.locations.map((location) => {
-							const d = new Date(location.created_at);
-							const created = formatDate(d);
-							return (
-								<tr key={location.id}>
-									<td>{location.name_location}</td>
-									<td>{location.enabled}</td>
-									<td>{location.delete}</td>
-									<td>{location.url}</td>
-									<td>{location.interval_location}</td>
-									<td>{created}</td>
-									<td>
-										<Button
-											className='mr-7'
-											variant='success'
-											onClick={(key) => {
-												this.editLocationHandler(location);
-											}}>
-											Edit
-										</Button>
-										<Button
-											className='mr-7 Formmargin'
-											variant='danger'
-											onClick={(key) => this.deleteLocation(location.id)}>
-											Delete
-										</Button>
-									</td>
-								</tr>
-							);
-						})}
-					</tbody>
-				</Table>
-			</Container>
+			<div>
+				{this.state.dataEmpty ? (
+					<Container className='mt-4'>{table}</Container>
+				) : (
+					<div className='spinner'>
+						<Spinner animation='border' role='status'>
+							<span className='visually-hidden'>Loading...</span>
+						</Spinner>
+					</div>
+				)}
+			</div>
 		);
 	}
 }

@@ -20,7 +20,8 @@ exports.up = function (knex) {
 		table.integer("interval").nullable();
 		table.integer("in").notNullable();
 		table.integer("out").notNullable();
-		table.dateTime("date_real").notNullable();
+		table.integer("hour").notNullable();
+		table.date("date_real").notNullable();
 		table.dateTime("date_out").notNullable();
 		table.timestamp("created_at").defaultTo(knex.raw("CURRENT_TIMESTAMP"));
 		table

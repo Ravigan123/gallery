@@ -6,6 +6,8 @@ import Button from "react-bootstrap/Button";
 import Modal from "react-modal";
 import DetailsReceiver from "./DetailsReceiver";
 import EditReceiver from "./EditReceiver";
+import * as AiIcons from "react-icons/ai";
+import Spinner from "react-bootstrap/Spinner";
 
 class Receivers extends React.Component {
 	constructor(props) {
@@ -14,6 +16,7 @@ class Receivers extends React.Component {
 			receivers: [],
 			showEditModal: false,
 			showDetailsModal: false,
+			dataEmpty: false,
 			editReceiver: {},
 			detailsReceiver: "",
 		};
@@ -31,6 +34,7 @@ class Receivers extends React.Component {
 	async feachReceivers() {
 		axios.get(`${process.env.REACT_APP_API_URL}receiver`).then((res) => {
 			const receivers = res.data;
+			this.state.dataEmpty = true;
 			this.setState({ receivers });
 		});
 	}
@@ -76,79 +80,103 @@ class Receivers extends React.Component {
 	}
 
 	render() {
+		let table;
+		if (this.state.receivers.length !== 0) {
+			table = (
+				<>
+					<h1>Receivers</h1>
+					<a className='float-end' href='/receiver/create'>
+						<Button variant='primary'>Add</Button>
+					</a>
+					<Modal isOpen={this.state.showEditModal} contentLabel='Edit receiver'>
+						<EditReceiver
+							name={this.state.editReceiver.name_receiver}
+							type={this.state.editReceiver.type_receiver}
+							address={this.state.editReceiver.address}
+							addition={this.state.editReceiver.addition}
+							id={this.state.editReceiver.id}
+							onCancel={() => this.toogleEditModal()}
+							onEdit={(receiver) => this.editReceiver(receiver)}
+						/>
+					</Modal>
+					<Modal
+						isOpen={this.state.showDetailsModal}
+						contentLabel='Details receiver'>
+						<DetailsReceiver
+							receiver={this.state.detailsReceiver}
+							onCancel={() => this.toogleDetailsModal()}
+							onAdd={(details) => this.showDetails(details)}
+						/>
+					</Modal>
+					<Table className='mt-5' hover>
+						<thead>
+							<tr>
+								<th>Name</th>
+								<th>Type</th>
+								<th>Address</th>
+								<th>Addition</th>
+								<th>Action</th>
+							</tr>
+						</thead>
+						<tbody>
+							{this.state.receivers.map((receiver, index) => {
+								return (
+									<tr key={receiver.id}>
+										<td>{receiver.name_receiver}</td>
+										<td>{receiver.type_receiver}</td>
+										<td>{receiver.address}</td>
+										<td>{receiver.addition}</td>
+										<td>
+											<AiIcons.AiOutlineMore
+												title='details'
+												className='icon-table'
+												onClick={(key) => {
+													this.DetailsReceiversHandler(receiver);
+												}}
+											/>
+											<AiIcons.AiFillEdit
+												title='edit'
+												className='icon-table'
+												onClick={(key) => {
+													this.editReceiverHandler(receiver);
+												}}
+											/>
+
+											<AiIcons.AiFillDelete
+												title='delete'
+												className='icon-table'
+												onClick={(key) => this.deleteReceiver(receiver.id)}
+											/>
+										</td>
+									</tr>
+								);
+							})}
+						</tbody>
+					</Table>
+				</>
+			);
+		} else {
+			table = (
+				<>
+					<h1 className='noElement'>No receivers</h1>
+					<a className='float-end' href='/location/create'>
+						<Button className='bnt-action'>Add</Button>
+					</a>
+				</>
+			);
+		}
 		return (
-			<Container className='mt-3'>
-				<h1>Receivers</h1>
-				<a className='float-end' href='/receiver/create'>
-					<Button variant='primary'>Add</Button>
-				</a>
-				<Modal isOpen={this.state.showEditModal} contentLabel='Edit receiver'>
-					<EditReceiver
-						name={this.state.editReceiver.name_receiver}
-						type={this.state.editReceiver.type_receiver}
-						address={this.state.editReceiver.address}
-						addition={this.state.editReceiver.addition}
-						id={this.state.editReceiver.id}
-						onCancel={() => this.toogleEditModal()}
-						onEdit={(receiver) => this.editReceiver(receiver)}
-					/>
-				</Modal>
-				<Modal
-					isOpen={this.state.showDetailsModal}
-					contentLabel='Details receiver'>
-					<DetailsReceiver
-						receiver={this.state.detailsReceiver}
-						onCancel={() => this.toogleDetailsModal()}
-						onAdd={(details) => this.showDetails(details)}
-					/>
-				</Modal>
-				<Table striped hover>
-					<thead>
-						<tr>
-							<th>Name</th>
-							<th>Type</th>
-							<th>Address</th>
-							<th>Addition</th>
-						</tr>
-					</thead>
-					<tbody>
-						{this.state.receivers.map((receiver, index) => {
-							return (
-								<tr key={receiver.id}>
-									<td>{receiver.name_receiver}</td>
-									<td>{receiver.type_receiver}</td>
-									<td>{receiver.address}</td>
-									<td>{receiver.addition}</td>
-									<td>
-										<Button
-											className='mr-7'
-											variant='primary'
-											onClick={(key) => {
-												this.DetailsReceiversHandler(receiver);
-											}}>
-											Details
-										</Button>
-										<Button
-											className='mr-7 Formmargin'
-											variant='success'
-											onClick={(key) => {
-												this.editReceiverHandler(receiver);
-											}}>
-											Edit
-										</Button>
-										<Button
-											className='mr-7 Formmargin'
-											variant='danger'
-											onClick={(key) => this.deleteReceiver(receiver.id)}>
-											Delete
-										</Button>
-									</td>
-								</tr>
-							);
-						})}
-					</tbody>
-				</Table>
-			</Container>
+			<div>
+				{this.state.dataEmpty ? (
+					<Container className='mt-4'>{table}</Container>
+				) : (
+					<div className='spinner'>
+						<Spinner animation='border' role='status'>
+							<span className='visually-hidden'>Loading...</span>
+						</Spinner>
+					</div>
+				)}
+			</div>
 		);
 	}
 }

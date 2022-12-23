@@ -7,6 +7,9 @@ import axios from "axios";
 
 function EditLocation(props) {
 	const [name, setName] = useState(props.name);
+	const [code, setCode] = useState(props.code);
+	const [codeSend, setCodeSend] = useState(props.codeSend);
+	const [codeReceive, setCodeReceive] = useState(props.codeReceive);
 	const [changedName, setchangedName] = useState(false);
 	const [del, setDel] = useState(props.delete);
 	const [url, setUrl] = useState(props.url);
@@ -37,6 +40,12 @@ function EditLocation(props) {
 				[name]: null,
 			});
 	};
+	const handleCodeSend = (event) => {
+		setCodeSend(event.target.value);
+	};
+	const handleCodeReceive = (event) => {
+		setCodeReceive(event.target.value);
+	};
 	const handleDel = (event) => {
 		setDel(event.target.value);
 	};
@@ -66,6 +75,8 @@ function EditLocation(props) {
 		const location = {
 			id: props.id,
 			name,
+			codeSend,
+			codeReceive,
 			enabled,
 			del,
 			url,
@@ -103,6 +114,37 @@ function EditLocation(props) {
 					</FloatingLabel>
 				</Form.Group>
 
+				<Form.Group controlId='validationCustomCodeSend'>
+					<FloatingLabel
+						controlId='floatingCodeSend'
+						label='CodeSend'
+						className='mb-3'>
+						<Form.Control
+							type='text'
+							placeholder='Code To Send'
+							name='codeSend'
+							value={codeSend}
+							required
+							onChange={handleCodeSend}
+						/>
+					</FloatingLabel>
+				</Form.Group>
+				<Form.Group controlId='validationCustomCodeReceive'>
+					<FloatingLabel
+						controlId='floatingCodeReceive'
+						label='CodeReceive'
+						className='mb-3'>
+						<Form.Control
+							type='text'
+							placeholder='Code to Receive'
+							name='codeReceive'
+							value={codeReceive}
+							required
+							onChange={handleCodeReceive}
+						/>
+					</FloatingLabel>
+				</Form.Group>
+
 				<Form.Group controlId='validationCustomDelete'>
 					<FloatingLabel
 						controlId='floatingDelete'
@@ -112,6 +154,7 @@ function EditLocation(props) {
 							type='number'
 							placeholder='Delete time'
 							name='delete'
+							min='0'
 							value={del}
 							required
 							isInvalid={!!errors.del}
@@ -149,6 +192,7 @@ function EditLocation(props) {
 							type='number'
 							placeholder='Interval'
 							name='interval'
+							min='0'
 							value={interval}
 							required
 							isInvalid={!!errors.interval}

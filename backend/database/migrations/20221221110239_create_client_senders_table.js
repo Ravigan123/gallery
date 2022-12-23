@@ -3,7 +3,7 @@
  * @returns { Promise<void> }
  */
 exports.up = function (knex) {
-	return knex.schema.createTable("data", (table) => {
+	return knex.schema.createTable("senders", (table) => {
 		table.increments("id").primary();
 		table.integer("id_location").unsigned().notNullable();
 		table
@@ -11,25 +11,15 @@ exports.up = function (knex) {
 			.references("locations.id")
 			.onUpdate("CASCADE")
 			.onDelete("CASCADE");
-		table.integer("id_device").unsigned().notNullable();
-		table
-			.foreign("id_device")
-			.references("devices.id")
-			.onUpdate("CASCADE")
-			.onDelete("CASCADE");
-		table.integer("interval").nullable();
-		table.integer("in").notNullable();
-		table.integer("out").notNullable();
-		table.integer("hour").notNullable();
-		table.integer("status").notNullable();
-		table.string("description", 100).nullable();
-		table.date("date_real").notNullable();
-		table.dateTime("date_out");
+		table.string("token", 64).notNullable();
+		table.string("email").notNullable();
+		table.string("status", 50).notNullable();
+		table.string("phone", 20).notNullable();
 		table.timestamp("created_at").defaultTo(knex.raw("CURRENT_TIMESTAMP"));
 		table
 			.timestamp("updated_at")
 			.defaultTo(knex.raw("CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP"));
-		table.unique(["id"], "idx_id_data");
+		table.unique(["id"], "idx_id_senders");
 	});
 };
 
@@ -38,5 +28,5 @@ exports.up = function (knex) {
  * @returns { Promise<void> }
  */
 exports.down = function (knex) {
-	return knex.schema.dropTableIfExists("data");
+	return knex.schema.dropTableIfExists("senders");
 };

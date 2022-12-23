@@ -32,6 +32,47 @@
 	margin-left: 0.5rem;
 }
 
+.spinner {
+	display: flex;
+	justify-content: center;
+	align-items: flex-start;
+	height: 100vh;
+	margin-top: 10rem;
+}
+
+.header {
+	font-size: 2.5rem;
+}
+
+.noElement {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.icon-table {
+	margin: 0 0.9rem;
+	font-size: 1.8rem;
+	color: #252f46;
+	cursor: pointer;
+}
+
+.table-hover tbody tr td,
+.table-hover tbody tr th {
+	text-align: center;
+}
+
+.table-hover thead tr td,
+.table-hover thead tr th {
+	text-align: center;
+}
+
+.table-hover tbody tr:hover td,
+.table-hover tbody tr:hover th {
+	background-color: #739aff;
+	color: #ffffff;
+}
+
 @keyframes App-logo-spin {
 	from {
 		transform: rotate(0deg);

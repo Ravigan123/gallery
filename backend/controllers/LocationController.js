@@ -6,6 +6,8 @@ class LocationController {
 			const location = await Location.query().select(
 				"id",
 				"name_location",
+				"code_to_send",
+				"code_to_receive",
 				"enabled",
 				"delete",
 				"url",
@@ -40,6 +42,8 @@ class LocationController {
 				.json({ message: "The given location already exists" });
 
 		const name_location = req.body.name;
+		const code_to_send = req.body.codeSend;
+		const code_to_receive = req.body.codeReceive;
 		const enabled = req.body.enabled;
 		const del = parseInt(req.body.del);
 		const url = req.body.url.replace(/\s/g, "");
@@ -49,6 +53,8 @@ class LocationController {
 		try {
 			newLocation = await Location.query().insert({
 				name_location,
+				code_to_send,
+				code_to_receive,
 				enabled,
 				delete: del,
 				url,
@@ -76,13 +82,21 @@ class LocationController {
 
 		const id = req.body.id;
 		const name_location = req.body.name;
+		const code_to_send = req.body.codeSend;
+		const code_to_receive = req.body.codeReceive;
 		const enabled = req.body.enabled;
 		const del = parseInt(req.body.del);
 		const url = req.body.url;
 		const interval_location = parseInt(req.body.interval);
-		const location = await Location.query()
-			.findById(id)
-			.patch({ name_location, enabled, delete: del, url, interval_location });
+		const location = await Location.query().findById(id).patch({
+			name_location,
+			code_to_send,
+			code_to_receive,
+			enabled,
+			delete: del,
+			url,
+			interval_location,
+		});
 
 		res.status(201).json(location);
 	}

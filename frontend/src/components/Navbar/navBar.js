@@ -13,6 +13,7 @@ function NavBar() {
 					<Nav.Link href='/location'>Location</Nav.Link>
 					<Nav.Link href='/device'>Device</Nav.Link>
 					<Nav.Link href='/type'>Type</Nav.Link>
+					<Nav.Link href='/sender'>Sender</Nav.Link>
 					<Nav.Link href='/receiver'>Receiver</Nav.Link>
 					<Nav.Link href='/alert'>Alert</Nav.Link>
 				</Nav>

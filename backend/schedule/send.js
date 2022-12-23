@@ -10,63 +10,88 @@ async function Send() {
 		const dataQuery = await Data.query()
 			.select(
 				"locations.name_location",
+				"locations.code_to_send",
 				"locations.url",
 				"locations.interval_location",
 				"data.id",
 				"data.in",
 				"data.out",
+				"data.hour",
 				"data.date_real",
 				"data.date_out",
 				"data.id_location",
 				"data.id_device",
 				"data.interval",
-				"data.created_at"
+				"devices.id_to_send"
 			)
 			.innerJoin("locations", "locations.id", "data.id_location")
+			.innerJoin("devices", "devices.id", "data.id_device")
 			.where("locations.enabled", 1);
 
-		for (const data of dataQuery) {
+		for (const entry of dataQuery) {
 			const d = new Date();
-			if (d.getMinutes() % data["interval_location"] == 0) {
+			if (d.getSeconds() % entry["interval_location"] == 0) {
 				const now = d.toLocaleString("se-SE", {
 					timeZone: "Europe/Warsaw",
 				});
 
+				const date_real = entry["date_real"].toLocaleString("se-SE", {
+					timeZone: "Europe/Warsaw",
+				});
+
+				const dateSplit = date_real.split(" ");
+				const date = dateSplit[0];
+
+				const data = [];
+				const snededObject = {
+					code: entry["code_to_send"],
+					type_id: entry["id_to_send"],
+					date,
+					hour: entry["hour"],
+					sumIn: entry["in"],
+					sumOut: entry["out"],
+				};
+				data.push(snededObject);
+
 				let part = "";
-				part = data["url"].split(",");
+				part = entry["url"].split(",");
+
 				for (const url of part) {
 					axios
-						.get(url)
-						.then(async (resp) => {
+						.post(
+							url,
+							{ data },
+							{
+								params: { reAuth: process.env.BLUEYE_KEY },
+								timeout: 1000 * 60 * 5,
+							}
+						)
+						.then(async (res) => {
 							await transaction(Archive, async (Archive, trx) => {
 								const archiveStore = await trx("archives").insert({
-									id_location: data["id_location"],
-									id_device: data["id_device"],
-									interval: data["interval"],
-									in: data["in"],
-									out: data["out"],
-									date_real: data["date_real"],
+									id_location: entry["id_location"],
+									id_device: entry["id_device"],
+									interval: entry["interval"],
+									in: entry["in"],
+									out: entry["out"],
+									hour: entry["hour"],
+									date_real: entry["date_real"],
 									date_out: now,
 								});
 
-								const dataDel = await Data.query(trx).deleteById(data["id"]);
-
-								return {
-									archiveStore,
-									dataDel,
-								};
+								const dataDel = await Data.query(trx).deleteById(entry["id"]);
 							});
 						})
-						.then("error", async (err) => {
+						.catch("error", async (err) => {
+							console.log(err);
 							try {
-								const id = data["id"];
+								const id = entry["id"];
 								const dataError = await Data.query().findById(id).patch({
 									date_out: now,
 									description: err.message,
 									status: 0,
 								});
 							} catch (error) {
-								// return res.status(422).json({ message: error.message });
 								console.log("Error: " + error.message);
 							}
 						});

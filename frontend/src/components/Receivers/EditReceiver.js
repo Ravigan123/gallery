@@ -142,7 +142,7 @@ function EditReceiver(props) {
 					className='float-end Formmargin'
 					variant='success'
 					type='submit'>
-					Add
+					Edit
 				</Button>
 				<Button
 					className='float-end'

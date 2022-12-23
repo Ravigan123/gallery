@@ -9,6 +9,8 @@ function EditDevice(props) {
 	const [name, setName] = useState(props.name);
 	const [changedName, setchangedName] = useState(false);
 	const [type, setType] = useState(props.type);
+	const [idSend, setIdSend] = useState(props.idSend);
+	const [idReceive, setIdReceive] = useState(props.idReceive);
 	const [location, setLocation] = useState(props.location);
 	const [interval, setInterval] = useState(props.interval);
 	const [checked, setChecked] = useState(props.enabled === 1 ? true : false);
@@ -64,6 +66,12 @@ function EditDevice(props) {
 	const handleType = (event) => {
 		setType(event.target.value);
 	};
+	const handleIdSend = (event) => {
+		setIdSend(event.target.value);
+	};
+	const handleIdReceive = (event) => {
+		setIdReceive(event.target.value);
+	};
 	const handleInterval = (event) => {
 		setInterval(event.target.value);
 	};
@@ -95,6 +103,8 @@ function EditDevice(props) {
 			name,
 			location,
 			type,
+			idSend,
+			idReceive,
 			params,
 			details,
 			interval,
@@ -128,6 +138,36 @@ function EditDevice(props) {
 						<Form.Control.Feedback type='invalid'>
 							{errors.name}
 						</Form.Control.Feedback>
+					</FloatingLabel>
+				</Form.Group>
+				<Form.Group controlId='validationCustomIdSend'>
+					<FloatingLabel
+						controlId='floatingIdSend'
+						label='IdSend'
+						className='mb-3'>
+						<Form.Control
+							type='text'
+							placeholder='Id to send'
+							name='idSend'
+							value={idSend}
+							required
+							onChange={handleIdSend}
+						/>
+					</FloatingLabel>
+				</Form.Group>
+				<Form.Group controlId='validationCustomIdReceive'>
+					<FloatingLabel
+						controlId='floatingIdReceive'
+						label='IdReceive'
+						className='mb-3'>
+						<Form.Control
+							type='text'
+							placeholder='Id to receive'
+							name='IdReceive'
+							value={idReceive}
+							required
+							onChange={handleIdReceive}
+						/>
 					</FloatingLabel>
 				</Form.Group>
 
@@ -202,6 +242,7 @@ function EditDevice(props) {
 							type='number'
 							placeholder='Interval'
 							name='interval'
+							min='0'
 							value={interval}
 							required
 							isInvalid={!!errors.interval}

@@ -5,9 +5,10 @@ const router = require("./routes/route");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const path = require("path");
-const delArchive = require("./schedule/deleteArchive");
+// const delArchive = require("./schedule/deleteArchive");
 const send = require("./schedule/send");
-const sendAlert = require("./schedule/sendAlert");
+// const sendAlert = require("./schedule/sendAlert");
+// const getFile = require("./schedule/getFile");
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));

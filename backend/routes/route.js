@@ -6,9 +6,11 @@ const LocationController = require("../controllers/LocationController");
 const TypeController = require("../controllers/TypeController");
 const AlertController = require("../controllers/AlertController");
 const ReceiverController = require("../controllers/ReceiverController");
+const SenderController = require("../controllers/SenderController");
 
-router.get("/data", DataController.getAllData);
-router.get("/store", DataController.translateData);
+router.get("/data", DataController.getDataToDashboard);
+// router.get("/store", DataController.translateData);
+router.post("/take/data", DataController.takeData);
 router.delete("/:id", DataController.deleteData);
 
 router.get("/type", TypeController.getAllTypes);
@@ -37,5 +39,10 @@ router.delete("/receiver/:id", ReceiverController.deleteReceiver);
 router.get("/alert", AlertController.getAllAlerts);
 router.get("/alertType", AlertController.getAlertType);
 router.put("/alert/:id", AlertController.doneAlert);
+
+router.post("/sender", SenderController.storeSender);
+router.get("/sender", SenderController.getAllSenders);
+router.put("/sender/:id", SenderController.updateSender);
+router.delete("/sender/:id", SenderController.deleteSender);
 
 module.exports = router;

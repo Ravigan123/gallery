@@ -5,7 +5,9 @@
 exports.up = function (knex) {
 	return knex.schema.createTable("locations", (table) => {
 		table.increments("id").primary();
-		table.string("name_location", 30).notNullable();
+		table.string("name_location", 100).notNullable();
+		table.string("code_to_send", 100).notNullable();
+		table.string("code_to_receive", 100).notNullable();
 		table.boolean("enabled").notNullable();
 		table.integer("delete").notNullable();
 		table.string("url").notNullable();

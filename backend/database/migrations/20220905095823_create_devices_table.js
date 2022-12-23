@@ -17,11 +17,13 @@ exports.up = function (knex) {
 			.references("types.id")
 			.onUpdate("CASCADE")
 			.onDelete("CASCADE");
-		table.string("name_device", 30).notNullable();
+		table.string("name_device", 50).notNullable();
+		table.string("id_to_send", 50).notNullable();
+		table.string("id_to_receive", 50).notNullable();
 		table.boolean("enabled").notNullable();
 		table.integer("interval_device").notNullable();
 		table.string("params").nullable();
-		table.string("details", 30).nullable();
+		table.string("details", 100).nullable();
 		table.timestamp("created_at").defaultTo(knex.raw("CURRENT_TIMESTAMP"));
 		table
 			.timestamp("updated_at")

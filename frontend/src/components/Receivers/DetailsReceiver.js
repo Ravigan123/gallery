@@ -6,6 +6,8 @@ import axios from "axios";
 import Button from "react-bootstrap/Button";
 import FloatingLabel from "react-bootstrap/FloatingLabel";
 import Alert from "react-bootstrap/Alert";
+import * as AiIcons from "react-icons/ai";
+import Spinner from "react-bootstrap/Spinner";
 
 function DetailsReceiver(props) {
 	const [details, setDetails] = useState([]);
@@ -15,6 +17,8 @@ function DetailsReceiver(props) {
 	const [alertType, setAlertType] = useState([]);
 	const [interval, setInterval] = useState("");
 	const [errors, setErrors] = useState({});
+	const [dataEmpty, setDataEmpty] = useState(false);
+
 	useEffect(() => {
 		feachDetails();
 		feachLocations();
@@ -27,6 +31,7 @@ function DetailsReceiver(props) {
 			.get(`${process.env.REACT_APP_API_URL}receiverDetails/` + id)
 			.then((res) => {
 				const details = res.data;
+				setDataEmpty(true);
 				setDetails(details);
 			});
 	}
@@ -132,11 +137,55 @@ function DetailsReceiver(props) {
 		else window.location.reload(false);
 	}
 
+	let table;
+	if (details.length !== 0) {
+		table = (
+			<>
+				<h3 className='mt-5 mb-5'>Locations and types alert</h3>
+
+				<Table className='mt-5' hover>
+					<thead>
+						<tr>
+							<th>location</th>
+							<th>Type alert</th>
+							<th>Interval</th>
+							<th>Action</th>
+						</tr>
+					</thead>
+					<tbody>
+						{details.map((detail, index) => {
+							return (
+								<tr key={detail.id}>
+									<td>{detail.name_location}</td>
+									<td>{detail.name_alert}</td>
+									<td>{detail.interval_receiver}</td>
+									<td>
+										<AiIcons.AiFillDelete
+											title='delete'
+											className='icon-table'
+											onClick={(key) => deleteReceiverDetails(detail.id)}
+										/>
+									</td>
+								</tr>
+							);
+						})}
+					</tbody>
+				</Table>
+			</>
+		);
+	} else {
+		table = (
+			<>
+				<h1 className='noElement mt-5 mb-5'>No details</h1>
+			</>
+		);
+	}
+
 	return (
 		<Container className='mt-3'>
 			<h1>Details Receiver</h1>
 
-			<Table striped hover>
+			<Table className='mt-5' hover>
 				<thead>
 					<tr>
 						<th>Name</th>
@@ -155,36 +204,8 @@ function DetailsReceiver(props) {
 				</tbody>
 			</Table>
 
-			<h3>Locations and types alert</h3>
+			{table}
 
-			<Table striped hover>
-				<thead>
-					<tr>
-						<th>location</th>
-						<th>Type alert</th>
-						<th>Interval</th>
-					</tr>
-				</thead>
-				<tbody>
-					{details.map((detail, index) => {
-						return (
-							<tr key={detail.id}>
-								<td>{detail.name_location}</td>
-								<td>{detail.name_alert}</td>
-								<td>{detail.interval_receiver}</td>
-								<td>
-									<Button
-										className='mr-7'
-										variant='danger'
-										onClick={(key) => deleteReceiverDetails(detail.id)}>
-										Delete
-									</Button>
-								</td>
-							</tr>
-						);
-					})}
-				</tbody>
-			</Table>
 			{errors.bothNull !== undefined && (
 				<Alert variant='danger'>{errors.bothNull}</Alert>
 			)}

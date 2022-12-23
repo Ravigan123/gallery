@@ -2,17 +2,52 @@ const Data = require("../models/Data");
 const Location = require("../models/Location");
 const Device = require("../models/Device");
 const Archive = require("../models/Archive");
+const Sender = require("../models/Sender");
 
 class DataController {
-	async getAllData(req, res) {
+	async getDataToDashboard(req, res) {
 		try {
-			const dataQuery = await Data.query()
+			const getDate = await Data.query()
 				.select("id_device")
-				.count("id_device", { as: "devices" })
+				.max("date_real", { as: "date" })
 				.groupBy("id_device");
-			res.status(200).json(dataQuery);
+
+			let dates = [];
+			for (const entry of getDate) {
+				const getHour = await Data.query()
+					.select("id_device", "hour", "date_real")
+					.max("hour", { as: "hour" })
+					.where("date_real", entry["date"]);
+
+				dates.push(getHour);
+			}
+
+			let data = [];
+			for (const entry of dates) {
+				const getData = await Data.query()
+					.select("id_device", "in", "out", "hour", "date_real")
+					.where("id_device", entry[0]["id_device"])
+					.where("date_real", entry[0]["date_real"])
+					.where("hour", entry[0]["hour"]);
+				const date_real = getData[0]["date_real"].toLocaleString("se-SE", {
+					timeZone: "Europe/Warsaw",
+				});
+				const dateSplit = date_real.split(" ");
+				const date = dateSplit[0];
+				const oneData = {
+					id_device: getData[0]["id_device"],
+					in: getData[0]["in"],
+					out: getData[0]["out"],
+					hour: getData[0]["hour"],
+					date,
+				};
+				data.push(oneData);
+			}
+
+			res.status(200).json(data);
 		} catch (error) {
-			res.status(500).json(error);
+			console.log(error.message);
+			res.status(422).json({ status: "ERROR", message: error.message });
 		}
 	}
 
@@ -35,41 +70,93 @@ class DataController {
 	async deleteData(req, res) {
 		res.render("index");
 	}
-}
 
-async function storeData(data, res) {
-	const locationQuery = await Location.query().findOne({
-		name_location: data.location,
-	});
+	async takeData(req, res) {
+		let store;
+		try {
+			if (req.body.token === undefined)
+				return res
+					.status(422)
+					.json({ status: "ERROR", message: "Empty token" });
+			if (req.body.data === undefined)
+				return res.status(422).json({ status: "ERROR", message: "Empty data" });
 
-	const deviceQuery = await Device.query().findOne({
-		name_device: data.device,
-	});
+			const { token, data } = req.body;
 
-	const interval = data.interval;
-	const ins = data.in;
-	const out = data.out;
-	const status = 1;
-	const location = locationQuery.id;
-	const device = deviceQuery.id;
-	const date_real = data.date_real;
+			const checkToken = await Sender.query().count("id").where("token", token);
 
-	let newData;
-	try {
-		newData = await Data.query().insert({
-			interval,
-			in: ins,
-			out,
-			status,
-			id_location: location,
-			id_device: device,
-			date_real,
-		});
-	} catch (err) {
-		return res.status(422).json({ message: err.message });
+			if (checkToken[0]["count(`id`)"] === 0)
+				return res
+					.status(422)
+					.json({ status: "ERROR", message: "Invalid Token" });
+
+			for (const entry of data) {
+				const data = {
+					location: entry["location"],
+					device: entry["device"],
+					interval: entry["interval"],
+					sumIn: entry["in"],
+					sumOut: entry["out"],
+					hour: entry["hour"],
+					date: entry["date"],
+					description: entry["description"],
+				};
+
+				store = await storeData(data);
+				if (store !== "OK") throw store;
+			}
+		} catch (error) {
+			res.status(422).json({ status: "ERROR", message: error.message });
+		}
+		if (store === "OK") res.status(201).json({ status: "OK" });
 	}
 
-	res.status(201).json(newData);
+	async deleteData(req, res) {
+		res.render("index");
+	}
+}
+
+async function storeData(data) {
+	console.log("data");
+	// let newData;
+	// try {
+	// 	const findLocation = await Location.query().findOne({
+	// 		code_to_receive: data.location,
+	// 	});
+
+	// 	if (findLocation === undefined) return "location not recognized";
+
+	// 	const findDevice = await Device.query().findOne({
+	// 		id_to_receive: data.device,
+	// 	});
+
+	// 	if (findDevice === undefined) return "device not recognized";
+
+	// 	const {
+	// 		location,
+	// 		device,
+	// 		interval,
+	// 		sumIn,
+	// 		sumOut,
+	// 		hour,
+	// 		description,
+	// 		date,
+	// 	} = data;
+
+	// 	newData = await Data.query().insert({
+	// 		id_location: findLocation["id"],
+	// 		id_device: findDevice["id"],
+	// 		interval,
+	// 		in: sumIn,
+	// 		out: sumOut,
+	// 		hour,
+	// 		status: 1,
+	// 		date_real: date,
+	// 	});
+	// } catch (error) {
+	// 	return error.message;
+	// }
+	return "OK";
 }
 
 module.exports = new DataController();

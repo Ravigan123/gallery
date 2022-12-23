@@ -9,6 +9,8 @@ import Alert from "react-bootstrap/Alert";
 
 function NewLocation() {
 	const [name, setName] = useState("");
+	const [codeSend, setCodeSend] = useState("");
+	const [codeReceive, setCodeReceive] = useState("");
 	const [del, setDel] = useState("");
 	const [url, setUrl] = useState("");
 	const [interval, setInterval] = useState("");
@@ -39,6 +41,12 @@ function NewLocation() {
 	const handleDel = (event) => {
 		setDel(event.target.value);
 	};
+	const handleCodeSend = (event) => {
+		setCodeSend(event.target.value);
+	};
+	const handleCodeReceive = (event) => {
+		setCodeReceive(event.target.value);
+	};
 	const handleUrl = (event) => {
 		setUrl(event.target.value);
 	};
@@ -66,6 +74,8 @@ function NewLocation() {
 		else enabled = 0;
 		const location = {
 			name,
+			codeSend,
+			codeReceive,
 			del,
 			url,
 			interval,
@@ -103,6 +113,37 @@ function NewLocation() {
 					</FloatingLabel>
 				</Form.Group>
 
+				<Form.Group controlId='validationCustomCodeSend'>
+					<FloatingLabel
+						controlId='floatingCodeSend'
+						label='CodeSend'
+						className='mb-3'>
+						<Form.Control
+							type='text'
+							placeholder='Code To Send'
+							name='codeSend'
+							value={codeSend}
+							required
+							onChange={handleCodeSend}
+						/>
+					</FloatingLabel>
+				</Form.Group>
+				<Form.Group controlId='validationCustomCodeReceive'>
+					<FloatingLabel
+						controlId='floatingCodeReceive'
+						label='CodeReceive'
+						className='mb-3'>
+						<Form.Control
+							type='text'
+							placeholder='Code to Receive'
+							name='codeReceive'
+							value={codeReceive}
+							required
+							onChange={handleCodeReceive}
+						/>
+					</FloatingLabel>
+				</Form.Group>
+
 				<Form.Group controlId='validationCustomDelete'>
 					<FloatingLabel
 						controlId='floatingDelete'
@@ -112,6 +153,7 @@ function NewLocation() {
 							type='number'
 							placeholder='Delete time'
 							name='delete'
+							min='0'
 							value={del}
 							required
 							isInvalid={!!errors.delete}
@@ -149,6 +191,7 @@ function NewLocation() {
 							type='number'
 							placeholder='Interval'
 							name='interval'
+							min='0'
 							value={interval}
 							required
 							isInvalid={!!errors.interval}

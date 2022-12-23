@@ -4,21 +4,18 @@ import Form from "react-bootstrap/Form";
 import Container from "react-bootstrap/Container";
 import FloatingLabel from "react-bootstrap/FloatingLabel";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
-import Alert from "react-bootstrap/Alert";
 
-function NewDevice() {
-	const [name, setName] = useState("");
-	const [type, setType] = useState("");
-	const [idSend, setIdSend] = useState("");
-	const [idReceive, setIdReceive] = useState("");
-	const [location, setLocation] = useState("");
-	const [interval, setInterval] = useState("");
-	const [checked, setChecked] = useState(false);
-	const [params, setParams] = useState("");
-	const [details, setDetails] = useState("");
+function EditDevice(props) {
+	const [name, setName] = useState(props.name);
+	const [changedName, setchangedName] = useState(false);
+	const [type, setType] = useState(props.type);
+	const [blueye, setBlueye] = useState(props.id_blueye);
+	const [location, setLocation] = useState(props.location);
+	const [interval, setInterval] = useState(props.interval);
+	const [checked, setChecked] = useState(props.enabled === 1 ? true : false);
+	const [params, setParams] = useState(props.params);
+	const [details, setDetails] = useState(props.details);
 	const [errors, setErrors] = useState({});
-	const navigate = useNavigate();
 	const [types, setTypes] = useState([]);
 	const [locations, setlocations] = useState([]);
 
@@ -42,20 +39,20 @@ function NewDevice() {
 			});
 	}
 
-	async function addToBase(device) {
+	async function validDevice(device) {
+		const id = device.id;
 		let err;
 		try {
-			await axios.post(`${process.env.REACT_APP_API_URL}device`, device);
+			await axios.put(`${process.env.REACT_APP_API_URL}device/` + id, device);
 		} catch (error) {
-			if (error.response.data === undefined)
-				err = "No connection to the server";
-			else err = error.response.data.message;
+			err = error.response.data.message;
 		}
 		return err;
 	}
 
 	const handleName = (event) => {
 		setName(event.target.value);
+		setchangedName(true);
 		if (!!errors[name])
 			setErrors({
 				...errors,
@@ -68,11 +65,8 @@ function NewDevice() {
 	const handleType = (event) => {
 		setType(event.target.value);
 	};
-	const handleIdSend = (event) => {
-		setIdSend(event.target.value);
-	};
-	const handleIdReceive = (event) => {
-		setIdReceive(event.target.value);
+	const handleBlueye = (event) => {
+		setBlueye(event.target.value);
 	};
 	const handleInterval = (event) => {
 		setInterval(event.target.value);
@@ -90,57 +84,41 @@ function NewDevice() {
 	const validateForm = (backandValid) => {
 		const newErrors = {};
 
-		if (backandValid === "No connection to the server")
-			newErrors.server = backandValid;
-		if (backandValid === "The given device already exists")
-			newErrors.name = backandValid;
-		if (backandValid === "Type and Location cannot be empty")
-			newErrors.typeLocation = backandValid;
+		if (backandValid !== undefined) newErrors.name = backandValid;
 
 		return newErrors;
 	};
 
-	async function addDevice(e) {
+	async function editDevice(e) {
 		e.preventDefault();
-		let formErrors;
-		let backandValid;
-		if (location === "" || type === "") {
-			const err = "Type and Location cannot be empty";
-			formErrors = validateForm(err);
-		} else {
-			let enabled;
-			if (checked === true) enabled = 1;
-			else enabled = 0;
-			const device = {
-				name,
-				location,
-				idSend,
-				idReceive,
-				type,
-				params,
-				details,
-				interval,
-				enabled,
-			};
-			backandValid = await addToBase(device);
-			formErrors = validateForm(backandValid);
-		}
-
+		let enabled;
+		if (checked === true) enabled = 1;
+		else enabled = 0;
+		const device = {
+			id: props.id,
+			name,
+			location,
+			type,
+			id_blueye: blueye,
+			params,
+			details,
+			interval,
+			enabled,
+			changedName,
+		};
+		const backendValid = await validDevice(device);
+		const formErrors = validateForm(backendValid);
 		if (Object.keys(formErrors).length > 0) setErrors(formErrors);
-		else navigate("/device");
+		else {
+			window.location.reload(false);
+			props.onCancel();
+		}
 	}
 
 	return (
 		<Container className='mt-3'>
-			<h1>Add Device</h1>
-			{errors.server !== undefined && (
-				<Alert variant='danger'>{errors.server}</Alert>
-			)}
-			{errors.typeLocation !== undefined && (
-				<Alert variant='danger'>{errors.typeLocation}</Alert>
-			)}
-
-			<Form onSubmit={addDevice}>
+			<h1>Edit Device</h1>
+			<Form onSubmit={editDevice}>
 				<Form.Group controlId='validationCustomName'>
 					<FloatingLabel controlId='floatingName' label='Name' className='mb-3'>
 						<Form.Control
@@ -158,33 +136,18 @@ function NewDevice() {
 					</FloatingLabel>
 				</Form.Group>
 
-				<Form.Group controlId='validationCustomIdSend'>
+				<Form.Group controlId='validationCustomblueye'>
 					<FloatingLabel
-						controlId='floatingIdSend'
-						label='Id to send'
+						controlId='floatingblueye'
+						label='blueye'
 						className='mb-3'>
 						<Form.Control
 							type='text'
-							placeholder='Id to send'
-							name='idSend'
-							value={idSend}
+							placeholder='Blueye ID'
+							name='blueye'
+							value={blueye}
 							required
-							onChange={handleIdSend}
-						/>
-					</FloatingLabel>
-				</Form.Group>
-				<Form.Group controlId='validationCustomIdReceive'>
-					<FloatingLabel
-						controlId='floatingIdReceive'
-						label='Id to receive'
-						className='mb-3'>
-						<Form.Control
-							type='text'
-							placeholder='Id to receive'
-							name='IdReceive'
-							value={idReceive}
-							required
-							onChange={handleIdReceive}
+							onChange={handleBlueye}
 						/>
 					</FloatingLabel>
 				</Form.Group>
@@ -194,10 +157,8 @@ function NewDevice() {
 					aria-label='Default select example'
 					onChange={handleType}
 					className='mb-3'
-					defaultValue='null'>
-					<option value='null' disabled>
-						Type
-					</option>
+					value={type}>
+					<option disabled>Type</option>
 					{types.map((type) => {
 						return (
 							<option key={type.id} value={type.id}>
@@ -211,10 +172,8 @@ function NewDevice() {
 					aria-label='Default select example'
 					onChange={handleLocation}
 					className='mb-3'
-					defaultValue='null'>
-					<option value='null' disabled>
-						Location
-					</option>
+					value={location}>
+					<option disabled>Location</option>
 					{locations.map((loc) => {
 						return (
 							<option key={loc.id} value={loc.id}>
@@ -227,7 +186,7 @@ function NewDevice() {
 				<Form.Group>
 					<FloatingLabel
 						controlId='floatingParams'
-						label='Params'
+						label='params'
 						className='mb-3'>
 						<Form.Control
 							type='text'
@@ -242,7 +201,7 @@ function NewDevice() {
 				<Form.Group>
 					<FloatingLabel
 						controlId='floatingDetails'
-						label='Details'
+						label='details'
 						className='mb-3'>
 						<Form.Control
 							type='text'
@@ -277,16 +236,28 @@ function NewDevice() {
 						type='checkbox'
 						label='Enabled'
 						name='checked'
+						checked={checked}
 						onChange={() => handleChange(checked)}
 					/>
 				</Form.Group>
 
-				<Button className='float-end' variant='primary' type='submit'>
-					Add
+				<Button
+					className='float-end Formmargin'
+					variant='success'
+					type='submit'>
+					Edit
+				</Button>
+				<Button
+					className='float-end'
+					variant='danger'
+					onClick={() => {
+						props.onCancel();
+					}}>
+					Cancel
 				</Button>
 			</Form>
 		</Container>
 	);
 }
 
-export default NewDevice;
+export default EditDevice;
