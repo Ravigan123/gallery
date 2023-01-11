@@ -29,7 +29,7 @@ class AlertController {
 
 			res.status(200).json(alerts);
 		} catch (error) {
-			res.status(500).json(error);
+			res.status(422).json(error);
 		}
 	}
 

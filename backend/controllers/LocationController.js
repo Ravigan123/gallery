@@ -16,7 +16,7 @@ class LocationController {
 			);
 			res.status(200).json(location);
 		} catch (error) {
-			res.status(500).json(error);
+			res.status(422).json(error);
 		}
 	}
 
@@ -27,7 +27,7 @@ class LocationController {
 				.where("enabled", 1);
 			res.status(200).json(location);
 		} catch (error) {
-			res.status(500).json(error);
+			res.status(422).json(error);
 		}
 	}
 

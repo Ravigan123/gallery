@@ -6,9 +6,11 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 const path = require("path");
 // const delArchive = require("./schedule/deleteArchive");
+const PrimaryGeter = require("./schedule/PrimaryGeter");
 const send = require("./schedule/send");
 // const sendAlert = require("./schedule/sendAlert");
-// const getFile = require("./schedule/getFile");
+
+process.env.TZ = "Etc/Universal"; // UTC +00:00
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));

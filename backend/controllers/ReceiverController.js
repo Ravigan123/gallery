@@ -17,7 +17,7 @@ class ReceiverController {
 
 			res.status(200).json(receivers);
 		} catch (error) {
-			res.status(500).json(error);
+			res.status(422).json(error);
 		}
 	}
 

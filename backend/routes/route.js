@@ -11,6 +11,7 @@ const SenderController = require("../controllers/SenderController");
 router.get("/data", DataController.getDataToDashboard);
 // router.get("/store", DataController.translateData);
 router.post("/take/data", DataController.takeData);
+router.post("/data/past", DataController.getDataFromPast);
 router.delete("/:id", DataController.deleteData);
 
 router.get("/type", TypeController.getAllTypes);

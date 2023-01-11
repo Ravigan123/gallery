@@ -32,7 +32,7 @@ class DeviceController {
 			const device = await Device.query().select("id", "name_device");
 			res.status(200).json(device);
 		} catch (error) {
-			res.status(500).json(error);
+			res.status(422).json(error);
 		}
 	}
 

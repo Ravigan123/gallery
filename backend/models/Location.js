@@ -5,6 +5,7 @@ const Device = require("./Device");
 const Archive = require("./Archive");
 const AlertTypeReceiver = require("./AlertTypeReceiver");
 const Sender = require("./Sender");
+const RuleGeter = require("./RuleGeter");
 Model.knex(knex);
 
 class Location extends Model {
@@ -61,6 +62,17 @@ class Location extends Model {
 			join: {
 				from: "locations.id",
 				to: "senders.id_location",
+			},
+		},
+	};
+
+	static relationMappings = {
+		rule_geter: {
+			relation: Model.HasManyRelation,
+			modelClass: RuleGeter,
+			join: {
+				from: "locations.id",
+				to: "rule_geter.id_location",
 			},
 		},
 	};

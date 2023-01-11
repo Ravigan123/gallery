@@ -2,6 +2,7 @@ import React from "react";
 import Location from "./components/Locations/Locations";
 import NavBar from "./components/Navbar/navBar";
 import Home from "./components/Home/Home";
+import PastData from "./components/Home/PastData";
 import NewLocation from "./components/Locations/NewLocation";
 import NewDevice from "./components/Devices/NewDevice";
 import Device from "./components/Devices/Device";
@@ -22,6 +23,7 @@ function App() {
 			<Router>
 				<Routes>
 					<Route path='/' element={<Home />} />
+					<Route path='/data/past' element={<PastData />} />
 					<Route path='/location' element={<Location />} />
 					<Route path='/location/create' element={<NewLocation />} />
 					<Route path='/device' element={<Device />} />

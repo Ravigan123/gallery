@@ -3,6 +3,7 @@ import Container from "react-bootstrap/Container";
 import Card from "react-bootstrap/Card";
 import axios from "axios";
 import Spinner from "react-bootstrap/Spinner";
+import Button from "react-bootstrap/Button";
 
 class Home extends React.Component {
 	constructor(props) {
@@ -53,7 +54,10 @@ class Home extends React.Component {
 			table = (
 				<>
 					<h1>Dashboard</h1>
-					{this.state.locations.map((location) => {
+					<a className='float-end' href='/data/past'>
+						<Button className='bnt-action'>get past data</Button>
+					</a>
+					{/* {this.state.locations.map((location) => {
 						return (
 							<Card key={location.id} className='mt-3'>
 								<Card.Header>Location: {location.name_location}</Card.Header>
@@ -86,13 +90,16 @@ class Home extends React.Component {
 								</Card.Body>
 							</Card>
 						);
-					})}
+					})} */}
 				</>
 			);
 		} else {
 			table = (
 				<>
 					<h1 className='noElement'>No Data</h1>
+					<a className='float-end' href='/data/past'>
+						<Button className='bnt-action'>get past data</Button>
+					</a>
 				</>
 			);
 		}

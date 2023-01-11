@@ -3,6 +3,7 @@ const Location = require("../models/Location");
 const Device = require("../models/Device");
 const Archive = require("../models/Archive");
 const Sender = require("../models/Sender");
+const EntranceGeter = require("../Geters/EntranceGeter");
 
 class DataController {
 	async getDataToDashboard(req, res) {
@@ -57,7 +58,6 @@ class DataController {
 
 	async translateData(req, res) {
 		const data = {
-			interval: req.query.interval,
 			in: req.query.in,
 			out: req.query.out,
 			location: req.query.location,
@@ -94,7 +94,6 @@ class DataController {
 				const data = {
 					location: entry["location"],
 					device: entry["device"],
-					interval: entry["interval"],
 					sumIn: entry["in"],
 					sumOut: entry["out"],
 					hour: entry["hour"],
@@ -113,6 +112,33 @@ class DataController {
 
 	async deleteData(req, res) {
 		res.render("index");
+	}
+
+	async getDataFromPast(req, res) {
+		try {
+			const { location, dateStart, dateEnd, hourInterval } = req.body;
+			const date = new Date();
+			let dateTimeStart = new Date(dateStart);
+			let dateTimeEnd = new Date(dateEnd);
+
+			while (dateTimeStart <= dateTimeEnd) {
+				const stringDate = dateTimeStart.toLocaleString("se-SE");
+				const d = stringDate.split(" ");
+				const onlyDate = d[0];
+				const data = await EntranceGeter.getData("", hourInterval, onlyDate);
+				const checkData = await EntranceGeter.checkData(data);
+				const storeData = await EntranceGeter.storeData(checkData).catch(
+					(error) => {
+						console.error(`ERROR: ${error}`);
+					}
+				);
+				dateTimeStart.setDate(dateTimeStart.getDate() + 1);
+			}
+			console.log(`Data saved to database`);
+			res.status(201).json({ status: "OK" });
+		} catch (error) {
+			res.status(422).json({ status: "ERROR", message: error.message });
+		}
 	}
 }
 

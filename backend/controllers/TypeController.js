@@ -6,7 +6,7 @@ class TypeController {
 			const type = await Type.query().select("id", "name_type", "enabled");
 			res.status(200).json(type);
 		} catch (error) {
-			res.status(500).json(error);
+			res.status(422).json(error);
 		}
 	}
 
@@ -17,7 +17,7 @@ class TypeController {
 				.where("enabled", 1);
 			res.status(200).json(type);
 		} catch (error) {
-			res.status(500).json(error);
+			res.status(422).json(error);
 		}
 	}
 }
